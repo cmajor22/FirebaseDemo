@@ -1,4 +1,3 @@
-import 'bulma/css/bulma.css';
 import firebase from 'firebase';
 import React from 'react';
 import { createRoot } from 'react-dom';
@@ -39,6 +38,7 @@ function AuthenticationButtons() {
         Sign Out
       </Button>
       <Button disabled>
+          {/* Display user photo, if the photo url isn't defined, substitute the first character of their name */}
         {photoURL ? 
           <Avatar src={photoURL}></Avatar>
           :
@@ -50,6 +50,7 @@ function AuthenticationButtons() {
 }
 
 function Navbar() {
+  // App nav bar
   return (
     <AppBar position="static" style={{marginBottom: '10px'}}>
       <Toolbar>
@@ -63,6 +64,7 @@ function Navbar() {
 }
 
 function App() {
+  // Main app content
 
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>

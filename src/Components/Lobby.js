@@ -6,6 +6,8 @@ import {
 } from 'reactfire';
 import { Grid, Card, Avatar, Typography, Button, Container } from '@material-ui/core';
 
+// Chat lobby
+
 const LobbyContext = React.createContext();
 
 const classes = {
@@ -21,10 +23,10 @@ const classes = {
 }
 
 export function LobbyProvider(props) {
+  // Handle users joining, leaving, changing status
   const { email, displayName, uid, photoURL } = useUser();
   const lobbyCollection = useFirestore().collection('lobby');
   const lobby = useFirestoreCollectionData(lobbyCollection);
-
   const userInLobby = lobby.find(m => m.email === email);
 
   const joinLobby = async () => {
@@ -47,6 +49,7 @@ export function LobbyProvider(props) {
 }
 
 export function LobbyActions() {
+  // UI components for lobby actions
   const { userInLobby, joinLobby, leaveLobby, toggleReadiness } = useContext(LobbyContext);
   const components = [];
 
@@ -76,36 +79,37 @@ export function LobbyActions() {
             {components}
         </Grid>
     </Container>
-  );
+    );
 }
 
 export function Lobby() {
+  // UI for lobby
   const { lobby } = useContext(LobbyContext);
 
   return (
     <Container>
         <Typography variant="h3">Lobby</Typography>
-      {lobby.map(m => {
-        return (
-          <Card key={m.email} style={classes.lobbyCard}>
-            <Grid container alignItems="center">
-              <Grid xs={2}>
-                  {m.photoURL ? 
-                    <Avatar src={m.photoURL}></Avatar>
-                  :
-                    <Avatar>{m.displayName.split(' ').map((item) => {return item.charAt(0)})}</Avatar>
-                  }
-              </Grid>
-              <Grid xs={9}>
-                <Typography>{m.displayName}</Typography>
-              </Grid>
-              <Grid xs={1}>
-                <Typography>{m.ready ? '🎮' : '❌'}</Typography>
-              </Grid>
-            </Grid>
-          </Card>
-        );
-      })}
+        {lobby.map(m => {
+            return (
+                <Card key={m.email} style={classes.lobbyCard}>
+                    <Grid container alignItems="center">
+                        <Grid xs={2}>
+                            {m.photoURL ? 
+                            <Avatar src={m.photoURL}></Avatar>
+                            :
+                            <Avatar>{m.displayName.split(' ').map((item) => {return item.charAt(0)})}</Avatar>
+                            }
+                        </Grid>
+                        <Grid xs={9}>
+                            <Typography>{m.displayName}</Typography>
+                        </Grid>
+                        <Grid xs={1}>
+                            <Typography>{m.ready ? '🎮' : '❌'}</Typography>
+                        </Grid>
+                    </Grid>
+                </Card>
+            );
+        })}
     </Container>
   );
 }

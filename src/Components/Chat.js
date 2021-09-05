@@ -37,37 +37,38 @@ const classes = {
 }
 
 export function ChatRoom() {
+    // Chat portion of the app
+
     const chatWindow = useRef();
     const auth = useAuth();
     const messagesRef = useFirestore().collection('messages');
     const query = messagesRef.orderBy('createdAt').limit(25);
-  
     const [messages] = useCollectionData(query, { idField: 'id' });
-  
     const [formValue, setFormValue] = useState('');
   
-  
     const sendMessage = async (e) => {
-      e.preventDefault();
-  
-      const { uid, photoURL, displayName } = auth.currentUser;
-  
-      await messagesRef.add({
-        text: formValue,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        uid,
-        displayName,
-        photoURL
-      })
-  
-      setFormValue('');
-      scrollToBottom();
+        // Handle chat submission
+        e.preventDefault();
+        const { uid, photoURL, displayName } = auth.currentUser;
+
+        await messagesRef.add({
+            text: formValue,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            uid,
+            displayName,
+            photoURL
+        });
+
+        setFormValue('');
+        scrollToBottom();
     }
 
     const scrollToBottom = () => {
+        //Scroll to bottom of chat window
         chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
     }
-  
+    
+    // Chat title, container, actions UI
     return (<div>
         <Container>
             <Typography variant="h3">Chat</Typography>
@@ -103,19 +104,21 @@ export function ChatRoom() {
   
   
   function ChatMessage(props) {
+    // UI for chat messages
     const auth = useAuth();
     const { text, uid, photoURL, displayName } = props.message;
-  
+
     const messageClass = uid === auth.currentUser.uid ? classes.sent : classes.received;
-  
+
     return (<>
-      <Grid container direction="row" alignItems="center" style={messageClass}>
-          {photoURL ? 
-            <Avatar src={photoURL || displayName.split(' ').map((item) => {return item.charAt(0)})} />
+        <Grid container direction="row" alignItems="center" style={messageClass}>
+            {/* If photo not available, show initials */}
+            {photoURL ? 
+            <Avatar src={photoURL} />
             :
             <Avatar>{displayName.split(' ').map((item) => {return item.charAt(0)})}</Avatar>
-          }
+            }
             <Typography style={classes.messageText}>{text}</Typography>
-      </Grid>
+        </Grid>
     </>)
   }
